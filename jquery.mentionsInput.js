@@ -89,15 +89,6 @@
 		//Deletes the white spaces
 		rtrim: function(string) {
 			return string.replace(/\s+$/,"");
-		},
-
-		extend: function(obj) {
-			$.each(Array.prototype.slice.call(arguments, 1), function(source) {
-				for (var prop in source) {
-					if (source[prop] !== void 0) obj[prop] = source[prop];
-				}
-			});
-			return obj;
 		}
 	};
 
@@ -176,7 +167,7 @@
 			var mentionText = utils.htmlEncode(syntaxMessage); //Encode the syntaxMessage
 
 			$.each(mentionsCollection, function(index, mention) {
-				var formattedMention = utils.extend({}, mention, {value: utils.htmlEncode(mention.value)});
+				var formattedMention = $.extend({}, mention, {value: utils.htmlEncode(mention.value)});
 				var textSyntax = settings.templates.mentionItemSyntax(formattedMention);
 				var textHighlight = settings.templates.mentionItemHighlight(formattedMention);
 
@@ -339,11 +330,11 @@
 			updateValues();
 			updateMentionsCollection();
 
-			var triggerCharIndex = _.lastIndexOf(inputBuffer, settings.triggerChar); //Returns the last match of the triggerChar in the inputBuffer
+			var triggerCharIndex = inputBuffer.lastIndexOf(settings.triggerChar); //Returns the last match of the triggerChar in the inputBuffer
 			if (triggerCharIndex > -1) { //If the triggerChar is present in the inputBuffer array
 				currentDataQuery = inputBuffer.slice(triggerCharIndex + 1).join(''); //Gets the currentDataQuery
 				currentDataQuery = utils.rtrim(currentDataQuery); //Deletes the whitespaces
-				_.defer(_.bind(doSearch, this, currentDataQuery)); //Invoking the function doSearch ( Bind the function to this)
+				setTimeout($.proxy(doSearch, this, currentDataQuery) , 1); //Invoking the function doSearch ( Bind the function to this)
 			}
 		}
 
@@ -361,13 +352,13 @@
 			// This also matches HOME/END on OSX which is CMD+LEFT, CMD+RIGHT
 			if (e.keyCode === KEY.LEFT || e.keyCode === KEY.RIGHT || e.keyCode === KEY.HOME || e.keyCode === KEY.END) {
 				// Defer execution to ensure carat pos has changed after HOME/END keys then call the resetBuffer function
-				_.defer(resetBuffer);
+				setTimeout(resetBuffer, 1);
 
 				// IE9 doesn't fire the oninput event when backspace or delete is pressed. This causes the highlighting
 				// to stay on the screen whenever backspace is pressed after a highlighed word. This is simply a hack
 				// to force updateValues() to fire when backspace/delete is pressed in IE9.
 				if (navigator.userAgent.indexOf("MSIE 9") > -1) {
-					_.defer(updateValues); //Call the updateValues function
+					setTimeout(updateValues, 1); //Call the updateValues function
 				}
 
 				return;
@@ -452,7 +443,7 @@
 			$.each(results, function(index, item) {
 				var itemUid = generateUniqueId('mention_'); //Gets the item with unique id
 
-				autocompleteItemCollection[itemUid] = utils.extend({}, item, {value: item.name}); //Inserts the new item to autocompleteItemCollection
+				autocompleteItemCollection[itemUid] = $.extend({}, item, {value: item.name}); //Inserts the new item to autocompleteItemCollection
 
 				var elmListItem = $(settings.templates.autocompleteListItem({
 					'id'      : utils.htmlEncode(item.id),
