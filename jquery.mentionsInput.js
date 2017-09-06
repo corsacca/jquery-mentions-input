@@ -568,6 +568,35 @@
 				resetInput();
 			},
 
+			destroy: function () {
+				var destroyEle = function (ele) {
+					if(ele) {
+						ele.remove();
+						delete ele;
+					}
+				};
+
+				resetInput();
+				autocompleteItemCollection = {};
+				inputBuffer = [];
+				mentionsCollection = [];
+
+				if(elmInputBox) {
+					elmInputBox.unbind('propertychange', onInputBoxInput);
+					elmInputBox.unbind('input', onInputBoxInput);
+					elmInputBox.unbind('keydown', onInputBoxKeyDown); //Bind the keydown event to the text area
+					elmInputBox.unbind('keypress', onInputBoxKeyPress); //Bind the keypress event to the text area
+					elmInputBox.unbind('click', onInputBoxClick); //Bind the click event to the text area
+					elmInputBox.unbind('blur', onInputBoxBlur);
+
+					destroyEle(elmInputBox);
+				}
+
+				destroyEle(elmActiveAutoCompleteItem);
+				destroyEle(elmMentionsOverlay);
+				destroyEle($(domInput));
+			},
+
 			//Reinit with the text area value if it was changed programmatically
 			reinit : function () {
 				resetInput(false);
