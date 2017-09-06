@@ -576,7 +576,7 @@
 					}
 				};
 
-				resetInput();
+				resetInput(settings.defaultValue);
 				autocompleteItemCollection = {};
 				inputBuffer = [];
 				mentionsCollection = [];
