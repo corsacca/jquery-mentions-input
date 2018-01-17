@@ -58,7 +58,11 @@
 	//Class util
 	var utils = {
 		htmlEncode       : function (str) {
-			return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g,'&#x2F;');
+      if (typeof str === "string"){
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g,'&#x2F;');
+      } else {
+        return str
+      }
 		},
 
 		//Encodes the character to be used with RegExp
@@ -236,7 +240,7 @@
 			hideAutoComplete();
 
 			// Mentions and syntax message
-			var updatedMessageText = start + mention.value + ' ' + end;
+			var updatedMessageText = start + '@' + mention.value + ' ' + end;
 			elmInputBox.val(updatedMessageText); //Set the value to the txt area
 			elmInputBox.trigger('mention');
 			updateValues();
@@ -425,10 +429,10 @@
 			if(!settings.allowRepeat) {
 				// Filter items that has already been mentioned
 				var mentionValues = $.map(mentionsCollection, function(index, mention) {
-					return mention.get('value');
+					return _.get(mention, 'value');
 				});
 				results = results.filter(function(result) {
-					return !mentionValues.contains(result.name);
+					return !mentionValues.includes(result.name);
 				});
 			}
 
@@ -635,3 +639,4 @@
 	};
 
 })(jQuery);
+
